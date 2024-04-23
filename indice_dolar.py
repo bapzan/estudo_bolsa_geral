@@ -61,28 +61,29 @@ print(f'A correlação entre {ticker1} e {ticker2} é {correlation}')
 
 # Interpretação: A correlação de 0.7758686242653083 entre USD/BRL e Ibovespa indica uma forte correlação positiva. Isso significa que, em geral, quando o valor do USD/BRL aumenta, o valor do Ibovespa também tende a aumentar, e vice-versa.
 
-### Regressão Linear
-# Importando as bibliotecas necessárias
-from sklearn.model_selection import train_test_split 
-from sklearn.linear_model import LinearRegression
-from sklearn import metrics
 
-# Reshape os dados para o formato correto
-X = close_price1.values.reshape(-1,1)
-y = close_price2.values.reshape(-1,1)
+### Teste de Granger
 
-# Dividindo os dados em conjuntos de treinamento e teste
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+# Importando a biblioteca necessária
+from statsmodels.tsa.stattools import grangercausalitytests
 
-# Treinando o algoritmo
-regressor = LinearRegression()  
-regressor.fit(X_train, y_train) 
+# Criando um DataFrame com as duas séries
+df = pd.concat([close_price1, close_price2], axis=1)
+df.columns = ['USD/BRL', 'Ibovespa']
 
-# Fazendo previsões
-y_pred = regressor.predict(X_test)
+# Removendo valores NaN e infinitos
+import numpy as np
+df = df.replace([np.inf, -np.inf], np.nan)
+df = df.dropna()
 
-# Comparando os valores reais e previstos
-df = pd.DataFrame({'Actual': y_test.flatten(), 'Predicted': y_pred.flatten()})
-print(df)
+# Agora você pode continuar com o teste de Granger
+granger_test = grangercausalitytests(df, maxlag=10)
 
 
+### Teste de Causalidade de Toda
+
+
+### Teste de Cointegração de Johansen
+
+
+### Modelos de Vetores Autorregressivos (VAR)
